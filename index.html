@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lamont Renovation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #F7F4EF; --warm-white: #FDFCFA; --ink: #1C1A17;
+    --ink-60: rgba(28,26,23,0.6); --ink-20: rgba(28,26,23,0.12); --ink-08: rgba(28,26,23,0.06);
+    --terracotta: #C4613A; --terracotta-light: #F5E8E2;
+    --gold: #B8860B; --gold-light: #FBF3DC;
+    --radius: 12px; --radius-sm: 8px; --sidebar: 220px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); display: flex; min-height: 100vh; }
+
+  .sidebar { width: var(--sidebar); min-height: 100vh; background: var(--ink); display: flex; flex-direction: column; padding: 2rem 1.25rem; position: fixed; top: 0; left: 0; z-index: 100; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--cream); margin-bottom: 0.2rem; letter-spacing: -0.3px; line-height: 1.2; }
+  .logo-sub { font-size: 0.7rem; color: rgba(247,244,239,0.4); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2.5rem; }
+  .nav-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(247,244,239,0.35); margin-bottom: 0.5rem; padding-left: 0.75rem; }
+  .nav-btn { display: flex; align-items: center; gap: 10px; padding: 0.6rem 0.75rem; border-radius: var(--radius-sm); color: rgba(247,244,239,0.6); font-size: 0.875rem; font-weight: 400; background: none; border: none; cursor: pointer; width: 100%; text-align: left; transition: all 0.15s; font-family: 'DM Sans', sans-serif; margin-bottom: 2px; }
+  .nav-btn:hover { background: rgba(247,244,239,0.08); color: var(--cream); }
+  .nav-btn.active { background: rgba(247,244,239,0.12); color: var(--cream); font-weight: 500; }
+  .nav-btn svg { flex-shrink: 0; opacity: 0.7; }
+  .nav-btn.active svg { opacity: 1; }
+  .nav-section { margin-bottom: 1.75rem; }
+  .sidebar-foot { margin-top: auto; font-size: 0.7rem; color: rgba(247,244,239,0.2); line-height: 1.5; padding-left: 0.75rem; }
+
+  .main { margin-left: var(--sidebar); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+  .topbar { background: var(--warm-white); border-bottom: 1px solid var(--ink-20); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; letter-spacing: -0.3px; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .content { padding: 2rem; flex: 1; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; cursor: pointer; border: 1px solid var(--ink-20); background: var(--warm-white); color: var(--ink); font-family: 'DM Sans', sans-serif; transition: all 0.15s; white-space: nowrap; }
+  .btn:hover { background: var(--cream); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .btn-primary:hover { background: #2e2b26; }
+  .btn-terra { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+  .btn-terra:hover { background: #b05530; }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
+  .btn-xs { padding: 0.2rem 0.5rem; font-size: 0.7rem; }
+  .btn-danger { color: #b91c1c; border-color: rgba(185,28,28,0.2); }
+  .btn-danger:hover { background: #fef2f2; }
+
+  .card { background: var(--warm-white); border: 1px solid var(--ink-20); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--ink-60); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .form-label span { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 0.7rem; color: rgba(28,26,23,0.35); margin-left: 4px; }
+  input[type=text], input[type=url], select, textarea { width: 100%; padding: 0.55rem 0.875rem; border: 1px solid var(--ink-20); border-radius: var(--radius-sm); font-size: 0.875rem; font-family: 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); outline: none; transition: border-color 0.15s; }
+  input[type=text]:focus, input[type=url]:focus, select:focus, textarea:focus { border-color: var(--terracotta); }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .photo-zone { border: 1.5px dashed var(--ink-20); border-radius: var(--radius); padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--cream); }
+  .photo-zone:hover, .photo-zone.drag-over { border-color: var(--terracotta); background: var(--terracotta-light); }
+  .photo-zone.has-photo { padding: 0; border-style: solid; border-color: var(--ink-20); overflow: hidden; cursor: default; }
+  .photo-zone img { width: 100%; height: auto; object-fit: contain; display: block; border-radius: calc(var(--radius) - 1px); }
+  .photo-hint { font-size: 0.8125rem; color: var(--ink-60); margin-bottom: 0.25rem; }
+  .photo-sub { font-size: 0.75rem; color: rgba(28,26,23,0.35); }
+  input[type=file] { display: none; }
+
+  .rating-group { display: flex; gap: 8px; }
+  .rating-btn { flex: 1; padding: 0.5rem; border-radius: var(--radius-sm); border: 1.5px solid var(--ink-20); background: var(--warm-white); font-family: 'DM Sans', sans-serif; font-size: 0.8125rem; font-weight: 500; cursor: pointer; text-align: center; transition: all 0.15s; color: var(--ink-60); }
+  .rating-btn:hover { border-color: var(--ink-60); color: var(--ink); }
+  .rating-btn.sel-like { background: #EAF3DE; border-color: #3B6D11; color: #3B6D11; }
+  .rating-btn.sel-ok   { background: #FBF3DC; border-color: #B8860B; color: #8a6208; }
+  .rating-btn.sel-love { background: #FBEAF0; border-color: #993556; color: #993556; }
+  .rating-pill { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .rating-pill.like { background: #EAF3DE; color: #3B6D11; }
+  .rating-pill.ok   { background: #FBF3DC; color: #8a6208; }
+  .rating-pill.love { background: #FBEAF0; color: #993556; }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+  .filters select { max-width: 170px; width: auto; }
+  .count-pill { font-size: 0.75rem; background: var(--ink-08); border: 1px solid var(--ink-20); border-radius: 20px; padding: 3px 10px; color: var(--ink-60); white-space: nowrap; }
+
+  .select-bar { background: var(--terracotta-light); border: 1px solid rgba(196,97,58,0.3); border-radius: var(--radius-sm); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .select-bar p { font-size: 0.8125rem; color: var(--terracotta); font-weight: 500; }
+  .select-bar-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+  .ideas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .idea-card { background: var(--warm-white); border: 1px solid var(--ink-20); border-radius: var(--radius); overflow: hidden; transition: border-color 0.15s; position: relative; cursor: pointer; }
+  .idea-card:hover { border-color: rgba(28,26,23,0.3); }
+  .idea-card.selectable { user-select: none; }
+  .idea-card.selected { border: 2px solid var(--terracotta); }
+  .card-checkbox { position: absolute; top: 8px; left: 8px; width: 22px; height: 22px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.9); background: rgba(255,255,255,0.6); display: none; align-items: center; justify-content: center; z-index: 3; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .idea-card.selectable .card-checkbox { display: flex; }
+  .idea-card.selected .card-checkbox { background: var(--terracotta); border-color: var(--terracotta); }
+  .card-checkbox svg { display: none; }
+  .idea-card.selected .card-checkbox svg { display: block; }
+  .idea-card .card-photo { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; background: var(--cream); }
+  .idea-card .card-photo-ph { width: 100%; height: 80px; display: flex; align-items: center; justify-content: center; background: var(--cream); color: var(--ink-20); font-size: 1.5rem; }
+  .idea-card .card-body { padding: 10px 12px; }
+  .idea-card .card-title { font-size: 0.8125rem; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+  .idea-card .card-notes { font-size: 0.75rem; color: var(--ink-60); margin-bottom: 4px; line-height: 1.4; }
+  .idea-card .card-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .room-badge { display: inline-block; font-size: 0.68rem; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .source-pill { display: inline-block; font-size: 0.68rem; padding: 2px 7px; border-radius: 20px; background: var(--gold-light); color: var(--gold); margin-left: 4px; }
+
+  /* MODALS */
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(28,26,23,0.5); z-index: 200; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--warm-white); border-radius: var(--radius); padding: 1.5rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; margin: auto; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
+  .modal-close { background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--ink-60); line-height: 1; padding: 4px; }
+
+  /* VIEW MODAL (read-only idea detail) */
+  .view-modal-photo { width: 100%; height: auto; border-radius: var(--radius-sm); margin-bottom: 1.25rem; display: block; }
+  .view-field { margin-bottom: 0.875rem; }
+  .view-field-label { font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-60); margin-bottom: 0.2rem; }
+  .view-field-value { font-size: 0.9rem; color: var(--ink); line-height: 1.5; }
+  .view-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-bottom: 0.875rem; }
+
+  /* BOARDS */
+  .boards-list { display: flex; flex-direction: column; gap: 16px; }
+  .board-card { background: var(--warm-white); border: 1px solid var(--ink-20); border-radius: var(--radius); overflow: hidden; }
+  .board-header { padding: 1rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--ink-08); }
+  .board-name { font-family: 'DM Serif Display', serif; font-size: 1.1rem; letter-spacing: -0.2px; margin-bottom: 2px; }
+  .board-meta { font-size: 0.75rem; color: var(--ink-60); }
+  .board-header-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+  .board-body { padding: 1rem 1.25rem; }
+  .board-mood-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .mood-tile { background: var(--cream); border: 1px solid var(--ink-20); border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+  .mood-tile:hover { border-color: rgba(28,26,23,0.4); }
+  .mood-tile img { width: 100%; height: auto; max-height: 200px; object-fit: contain; display: block; background: var(--cream); }
+  .mood-tile .mood-ph { width: 100%; height: 80px; display: flex; align-items: center; justify-content: center; color: var(--ink-20); font-size: 1.5rem; }
+  .mood-tile-body { padding: 7px 9px; }
+  .mood-tile-title { font-size: 0.75rem; font-weight: 500; line-height: 1.3; margin-bottom: 3px; }
+  .mood-remove { display: flex; justify-content: flex-end; padding: 4px 6px 6px; }
+
+  /* MOOD BOARD VIEW (photo-only) */
+  .mbv-backdrop { display: none; position: fixed; inset: 0; background: #111; z-index: 300; flex-direction: column; }
+  .mbv-backdrop.open { display: flex; }
+  .mbv-topbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: #1a1a1a; flex-shrink: 0; }
+  .mbv-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: #f0ede8; }
+  .mbv-actions { display: flex; gap: 8px; }
+  .mbv-grid { flex: 1; overflow-y: auto; padding: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; align-content: start; }
+  .mbv-photo-tile { border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; position: relative; background: #222; }
+  .mbv-photo-tile img { width: 100%; height: auto; display: block; transition: opacity 0.15s; }
+  .mbv-photo-tile:hover img { opacity: 0.85; }
+  .mbv-photo-tile .mbv-ph { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 2rem; }
+  .mbv-photo-tile .mbv-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 1.5rem 0.75rem 0.75rem; opacity: 0; transition: opacity 0.15s; }
+  .mbv-photo-tile:hover .mbv-overlay { opacity: 1; }
+  .mbv-overlay-title { font-size: 0.8rem; color: #fff; font-weight: 500; }
+
+  /* PDF printable mood board */
+  @media print {
+    body > *:not(#pdf-print-area) { display: none !important; }
+    #pdf-print-area { display: block !important; }
+  }
+  #pdf-print-area { display: none; }
+  .pdf-page { padding: 2rem; font-family: 'DM Sans', sans-serif; }
+  .pdf-header { margin-bottom: 1.5rem; border-bottom: 2px solid #1C1A17; padding-bottom: 0.75rem; }
+  .pdf-header h1 { font-family: 'DM Serif Display', serif; font-size: 1.75rem; }
+  .pdf-header p { font-size: 0.8rem; color: #666; margin-top: 0.25rem; }
+  .pdf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pdf-tile { break-inside: avoid; }
+  .pdf-tile img { width: 100%; height: auto; border-radius: 6px; display: block; margin-bottom: 4px; }
+  .pdf-tile .pdf-ph { width: 100%; height: 100px; background: #eee; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 4px; }
+  .pdf-tile-title { font-size: 0.75rem; font-weight: 500; }
+  .pdf-tile-sub { font-size: 0.65rem; color: #666; }
+
+  .new-board-form { background: var(--cream); border: 1px dashed var(--ink-20); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .new-board-form h3 { font-size: 0.875rem; font-weight: 500; margin-bottom: 1rem; }
+  .new-board-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+  .new-board-row input { flex: 2; min-width: 180px; }
+  .new-board-row select { flex: 1; min-width: 140px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--ink-60); font-size: 0.875rem; }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--cream); padding: 0.625rem 1.25rem; border-radius: 100px; font-size: 0.8125rem; z-index: 999; transition: transform 0.25s ease; pointer-events: none; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .loading-screen { position: fixed; inset: 0; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 500; flex-direction: column; gap: 1rem; }
+  .loading-screen .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--ink-20); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    :root { --sidebar: 0px; }
+    .sidebar { width: 100%; min-height: auto; position: relative; flex-direction: row; flex-wrap: wrap; padding: 0.75rem 1rem; gap: 4px; }
+    .logo-sub, .nav-label, .sidebar-foot { display: none; }
+    .logo { margin-bottom: 0; font-size: 1rem; width: 100%; }
+    .nav-section { margin-bottom: 0; display: flex; gap: 4px; }
+    .main { margin-left: 0; }
+    body { flex-direction: column; }
+    .content { padding: 1rem; }
+    .topbar { padding: 0.75rem 1rem; }
+    .ideas-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="logo">Lamont Renovation</div>
+  <div class="spinner"></div>
+  <p style="font-size:0.875rem;color:var(--ink-60)">Loading your ideas…</p>
+</div>
+
+<nav class="sidebar">
+  <div class="logo">Lamont<br>Renovation</div>
+  <div class="logo-sub">Inspiration</div>
+  <div class="nav-section">
+    <div class="nav-label">Collect</div>
+    <button class="nav-btn active" onclick="showPage('capture')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Capture
+    </button>
+    <button class="nav-btn" onclick="showPage('ideas')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>All ideas
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Create</div>
+    <button class="nav-btn" onclick="showPage('moodboard')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Mood boards
+    </button>
+  </div>
+  <div class="sidebar-foot">Synced to Firebase<br>Works on any device</div>
+</nav>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="page-title">Capture an idea</span>
+    <div class="topbar-actions" id="topbar-actions"></div>
+  </div>
+  <div class="content">
+
+    <!-- CAPTURE -->
+    <div class="page active" id="page-capture">
+      <div class="card" style="max-width:660px">
+        <div class="form-group">
+          <label class="form-label">Photo <span>optional</span></label>
+          <div class="photo-zone" id="photo-zone"
+            onclick="if(!this.classList.contains('has-photo')) document.getElementById('file-input').click()"
+            ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
+            ondrop="onDrop(event,'photo-zone','photo-preview','photo-placeholder','file-input','photo-btn-row',false)">
+            <div id="photo-placeholder">
+              <div style="font-size:2rem;margin-bottom:0.5rem">📷</div>
+              <p class="photo-hint">Click to upload, drag a file, or paste a screenshot (Ctrl/Cmd+V)</p>
+              <p class="photo-sub">JPG, PNG, HEIC, screenshots — any image</p>
+            </div>
+            <img id="photo-preview" src="" alt="Preview" style="display:none" />
+          </div>
+          <div id="photo-btn-row" style="display:none;gap:6px;margin-top:8px">
+            <button class="btn btn-sm" onclick="document.getElementById('file-input').click()">Change photo</button>
+            <button class="btn btn-sm btn-danger" onclick="clearPhoto('photo-zone','photo-preview','photo-placeholder','file-input','photo-btn-row',false)">Remove</button>
+          </div>
+          <input type="file" id="file-input" accept="image/*" onchange="onFileSelect(event,'photo-preview','photo-zone','photo-placeholder','photo-btn-row',false)" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Title or description</label>
+            <input type="text" id="f-title" placeholder="e.g. Walnut sideboard with hairpin legs" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room</label>
+            <select id="f-room">
+              <option value="">— select a room —</option>
+              <option>Bedroom Master</option><option>Bedroom 1</option><option>Bedroom 2</option>
+              <option>Bathroom Master</option><option>Bathroom 1</option><option>Bathroom 2</option><option>Bathroom 3</option>
+              <option>Closet Linen</option><option>Closet Coat</option><option>Office</option>
+              <option>Kitchen</option><option>Kitchen Pantry</option><option>Laundry Room</option>
+              <option>Main Room Living</option><option>Main Room General</option><option>Main Room Dining</option><option>Main Room Entrance</option>
+              <option>Outside Front Door</option><option>Outside Backyard</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Rating <span>optional</span></label>
+            <div class="rating-group">
+              <button type="button" class="rating-btn" id="rb-ok"   onclick="setRating('ok')">👍 OK</button>
+              <button type="button" class="rating-btn" id="rb-like" onclick="setRating('like')">⭐ Like</button>
+              <button type="button" class="rating-btn" id="rb-love" onclick="setRating('love')">❤️ Love</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Added by <span>optional</span></label>
+            <input type="text" id="f-addedby" placeholder="Your name" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Source</label>
+            <select id="f-source">
+              <option value="Houzz">Houzz</option>
+              <option value="Pinterest">Pinterest</option>
+              <option value="Online Store">Online Store</option>
+              <option value="Website">Website</option>
+              <option value="Catalog">Catalog</option>
+              <option value="Personal Photo">Personal Photo</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Link <span>optional</span></label>
+            <input type="url" id="f-url" placeholder="Paste URL if from web" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Price <span>optional</span></label>
+            <input type="text" id="f-price" placeholder="e.g. $560 or $5.60 / yd" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Color / Finish chosen <span>optional</span></label>
+            <input type="text" id="f-color" placeholder="e.g. Sage green, matte finish" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Additional colors available <span>optional</span></label>
+          <input type="text" id="f-colors-extra" placeholder="e.g. Navy, Terracotta, Off-white" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes <span>optional</span></label>
+          <textarea id="f-notes" placeholder="Brand, dimensions, why you love it, where to buy…"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:0.5rem">
+          <button class="btn" onclick="clearCaptureForm()">Clear</button>
+          <button class="btn btn-terra" id="save-btn" onclick="saveIdea()">Save idea</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL IDEAS -->
+    <div class="page" id="page-ideas">
+      <div id="select-mode-bar" style="display:none">
+        <div class="select-bar">
+          <p id="sel-count-label">0 ideas selected — tick the ones you want</p>
+          <div class="select-bar-actions">
+            <select id="target-board-select" style="font-size:0.8125rem;padding:0.35rem 0.625rem;border-radius:var(--radius-sm);border:1px solid var(--ink-20);background:var(--warm-white);font-family:'DM Sans',sans-serif">
+              <option value="">— pick a board —</option>
+            </select>
+            <button class="btn btn-sm btn-terra" onclick="assignSelected()">Add to board</button>
+            <button class="btn btn-sm" onclick="cancelSelectMode()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="filters">
+        <select onchange="renderIdeas()" id="fil-room">
+          <option value="">All rooms</option>
+          <option>Bedroom Master</option><option>Bedroom 1</option><option>Bedroom 2</option>
+          <option>Bathroom Master</option><option>Bathroom 1</option><option>Bathroom 2</option><option>Bathroom 3</option>
+          <option>Closet Linen</option><option>Closet Coat</option><option>Office</option>
+          <option>Kitchen</option><option>Kitchen Pantry</option><option>Laundry Room</option>
+          <option>Main Room Living</option><option>Main Room General</option><option>Main Room Dining</option><option>Main Room Entrance</option>
+          <option>Outside Front Door</option><option>Outside Backyard</option>
+        </select>
+        <select onchange="renderIdeas()" id="fil-rating">
+          <option value="">All ratings</option>
+          <option value="love">❤️ Love</option>
+          <option value="like">⭐ Like</option>
+          <option value="ok">👍 OK</option>
+          <option value="none">Unrated</option>
+        </select>
+        <select onchange="renderIdeas()" id="fil-src">
+          <option value="">All sources</option>
+          <option>Houzz</option><option>Pinterest</option><option>Online Store</option>
+          <option>Website</option><option>Catalog</option><option>Personal Photo</option><option>Miscellaneous</option>
+        </select>
+        <span class="count-pill" id="idea-count-pill">0 ideas</span>
+      </div>
+      <div class="ideas-grid" id="ideas-grid"></div>
+    </div>
+
+    <!-- MOOD BOARDS -->
+    <div class="page" id="page-moodboard">
+      <div class="new-board-form">
+        <h3>Create a new mood board</h3>
+        <div class="new-board-row">
+          <input type="text" id="nb-name" placeholder="e.g. Master Bedroom – warm & textured" />
+          <select id="nb-room">
+            <option value="">Any room</option>
+            <option>Bedroom Master</option><option>Bedroom 1</option><option>Bedroom 2</option>
+            <option>Bathroom Master</option><option>Bathroom 1</option><option>Bathroom 2</option><option>Bathroom 3</option>
+            <option>Closet Linen</option><option>Closet Coat</option><option>Office</option>
+            <option>Kitchen</option><option>Kitchen Pantry</option><option>Laundry Room</option>
+            <option>Main Room Living</option><option>Main Room General</option><option>Main Room Dining</option><option>Main Room Entrance</option>
+            <option>Outside Front Door</option><option>Outside Backyard</option>
+          </select>
+          <button class="btn btn-primary" onclick="createBoard()">Create board</button>
+        </div>
+      </div>
+      <div class="boards-list" id="boards-list"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- EDIT/VIEW MODAL -->
+<div class="modal-backdrop" id="edit-modal" onclick="if(event.target===this) closeEditModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="edit-modal-title">Edit idea</span>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div id="edit-modal-body"></div>
+  </div>
+</div>
+
+<!-- VIEW-ONLY MODAL (from mood board tile click) -->
+<div class="modal-backdrop" id="view-modal" onclick="if(event.target===this) closeViewModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="view-modal-title">Idea detail</span>
+      <button class="modal-close" onclick="closeViewModal()">✕</button>
+    </div>
+    <div id="view-modal-body"></div>
+  </div>
+</div>
+
+<!-- MOOD BOARD VIEW (photo grid fullscreen) -->
+<div class="mbv-backdrop" id="mbv-backdrop">
+  <div class="mbv-topbar">
+    <span class="mbv-title" id="mbv-title"></span>
+    <div class="mbv-actions">
+      <button class="btn btn-sm" style="background:#2a2a2a;border-color:#444;color:#ddd" onclick="exportMoodBoardPDF()">⬇ Export PDF</button>
+      <button class="btn btn-sm" style="background:#2a2a2a;border-color:#444;color:#ddd" onclick="closeMoodBoardView()">✕ Close</button>
+    </div>
+  </div>
+  <div class="mbv-grid" id="mbv-grid"></div>
+</div>
+
+<!-- PDF PRINT AREA -->
+<div id="pdf-print-area"></div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBS8eGi886IZdZsUrxQV1hesVV08ZiXij8",
+  authDomain: "reno-30474.firebaseapp.com",
+  projectId: "reno-30474",
+  storageBucket: "reno-30474.firebasestorage.app",
+  messagingSenderId: "949491424465",
+  appId: "1:949491424465:web:29bb92b33db3f7b8f879f0"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const storage = getStorage(app);
+
+const RATING_INFO = { love:{cls:'love',label:'❤️ Love'}, like:{cls:'like',label:'⭐ Like'}, ok:{cls:'ok',label:'👍 OK'} };
+const ROOM_COLORS = {
+  'Bedroom Master':'#3d2d7a','Bedroom 1':'#3d2d7a','Bedroom 2':'#3d2d7a',
+  'Bathroom Master':'#1a3d7a','Bathroom 1':'#1a3d7a','Bathroom 2':'#1a3d7a','Bathroom 3':'#1a3d7a',
+  'Closet Linen':'#5a3a1a','Closet Coat':'#5a3a1a','Office':'#1a4d2e',
+  'Kitchen':'#7a1a1a','Kitchen Pantry':'#7a1a1a','Laundry Room':'#1a4040',
+  'Main Room Living':'#3a5a1a','Main Room General':'#3a5a1a','Main Room Dining':'#3a5a1a','Main Room Entrance':'#3a5a1a',
+  'Outside Front Door':'#1a3d5a','Outside Backyard':'#1a3d5a'
+};
+const ROOM_BG = {
+  'Bedroom Master':'#EEEAFC','Bedroom 1':'#EEEAFC','Bedroom 2':'#EEEAFC',
+  'Bathroom Master':'#E8F0FC','Bathroom 1':'#E8F0FC','Bathroom 2':'#E8F0FC','Bathroom 3':'#E8F0FC',
+  'Closet Linen':'#FBF0E8','Closet Coat':'#FBF0E8','Office':'#E8F5EC',
+  'Kitchen':'#FCE8E8','Kitchen Pantry':'#FCE8E8','Laundry Room':'#E8F5F5',
+  'Main Room Living':'#EEF5E8','Main Room General':'#EEF5E8','Main Room Dining':'#EEF5E8','Main Room Entrance':'#EEF5E8',
+  'Outside Front Door':'#E8EFF8','Outside Backyard':'#E8EFF8'
+};
+
+let ideas = [], boards = [];
+let capturePhoto = null, captureRating = null;
+let editingId = null, editPhoto = null, editRating = null;
+let selectMode = false, selectedIds = new Set();
+let activeMoodBoardId = null;
+
+// ── HELPERS ───────────────────────────────────────────────────
+window.toast = msg => { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); };
+
+window.showPage = p => {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((btn,i)=>btn.classList.toggle('active',['capture','ideas','moodboard'][i]===p));
+  document.getElementById('page-title').textContent={capture:'Capture an idea',ideas:'All ideas',moodboard:'Mood boards'}[p];
+  if(p==='ideas') renderIdeas();
+  if(p==='moodboard') renderBoards();
+};
+
+// ── PASTE ─────────────────────────────────────────────────────
+document.addEventListener('paste', e => {
+  const items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  for(let i=0;i<items.length;i++){
+    if(items[i].type.startsWith('image/')){
+      const file=items[i].getAsFile();
+      const isEdit=document.getElementById('edit-modal').classList.contains('open');
+      if(isEdit) readFileForZone(file,'edit-photo-preview','edit-photo-zone','edit-photo-placeholder','edit-photo-btn-row',true);
+      else readFileForZone(file,'photo-preview','photo-zone','photo-placeholder','photo-btn-row',false);
+      break;
+    }
+  }
+});
+
+// ── PHOTO ─────────────────────────────────────────────────────
+window.onDragOver = e => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); };
+window.onDragLeave = e => { e.currentTarget.classList.remove('drag-over'); };
+window.onDrop = (e,zoneId,prevId,phId,inputId,btnRowId,isEdit) => {
+  e.preventDefault(); document.getElementById(zoneId).classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/')) readFileForZone(f,prevId,zoneId,phId,btnRowId,isEdit);
+};
+window.onFileSelect = (e,prevId,zoneId,phId,btnRowId,isEdit) => { const f=e.target.files[0]; if(f) readFileForZone(f,prevId,zoneId,phId,btnRowId,isEdit); };
+function readFileForZone(file,prevId,zoneId,phId,btnRowId,isEdit){
+  const r=new FileReader(); r.onload=ev=>setZonePhoto(ev.target.result,prevId,zoneId,phId,btnRowId,isEdit); r.readAsDataURL(file);
+}
+function setZonePhoto(data,prevId,zoneId,phId,btnRowId,isEdit){
+  if(isEdit) editPhoto=data; else capturePhoto=data;
+  document.getElementById(phId).style.display='none';
+  const p=document.getElementById(prevId); p.src=data; p.style.display='block';
+  document.getElementById(zoneId).classList.add('has-photo');
+  document.getElementById(btnRowId).style.display='flex';
+}
+window.clearPhoto = (zoneId,prevId,phId,inputId,btnRowId,isEdit) => {
+  if(isEdit) editPhoto=null; else capturePhoto=null;
+  document.getElementById(phId).style.display='block';
+  const p=document.getElementById(prevId); p.src=''; p.style.display='none';
+  document.getElementById(zoneId).classList.remove('has-photo');
+  document.getElementById(btnRowId).style.display='none';
+  document.getElementById(inputId).value='';
+};
+async function uploadPhoto(dataUrl,path){
+  if(!dataUrl) return null;
+  const storageRef=ref(storage,path);
+  await uploadString(storageRef,dataUrl,'data_url');
+  return await getDownloadURL(storageRef);
+}
+
+// ── RATING ────────────────────────────────────────────────────
+window.setRating = val => {
+  captureRating = captureRating===val?null:val;
+  ['ok','like','love'].forEach(r=>{ document.getElementById('rb-'+r).className='rating-btn'+(captureRating===r?' sel-'+r:''); });
+};
+window.setEditRating = val => {
+  editRating = editRating===val?null:val;
+  ['ok','like','love'].forEach(r=>{ document.getElementById('erb-'+r).className='rating-btn'+(editRating===r?' sel-'+r:''); });
+};
+
+// ── CAPTURE ───────────────────────────────────────────────────
+window.clearCaptureForm = () => {
+  ['f-title','f-url','f-notes','f-addedby','f-price','f-color','f-colors-extra'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-room').value=''; document.getElementById('f-source').value='Houzz';
+  captureRating=null; ['ok','like','love'].forEach(r=>document.getElementById('rb-'+r).className='rating-btn');
+  clearPhoto('photo-zone','photo-preview','photo-placeholder','file-input','photo-btn-row',false);
+};
+window.saveIdea = async () => {
+  const title=document.getElementById('f-title').value.trim();
+  const room=document.getElementById('f-room').value;
+  if(!title){alert('Please add a title or description.');return;}
+  if(!room){alert('Please select a room.');return;}
+  const btn=document.getElementById('save-btn'); btn.disabled=true; btn.textContent='Saving…';
+  try {
+    let photoUrl=null;
+    if(capturePhoto){ const path=`photos/${Date.now()}_${Math.random().toString(36).slice(2)}`; photoUrl=await uploadPhoto(capturePhoto,path); }
+    await addDoc(collection(db,'ideas'),{
+      title, room,
+      source: document.getElementById('f-source').value,
+      url:    document.getElementById('f-url').value.trim(),
+      notes:  document.getElementById('f-notes').value.trim(),
+      addedBy:document.getElementById('f-addedby').value.trim(),
+      price:  document.getElementById('f-price').value.trim(),
+      colorChosen: document.getElementById('f-color').value.trim(),
+      colorsExtra: document.getElementById('f-colors-extra').value.trim(),
+      rating: captureRating, photoUrl, created: Date.now()
+    });
+    clearCaptureForm(); toast('Idea saved!'); showPage('ideas');
+  } catch(err){ console.error(err); alert('Error saving. Check your Firebase setup.'); }
+  finally { btn.disabled=false; btn.textContent='Save idea'; }
+};
+
+// ── ALL IDEAS ─────────────────────────────────────────────────
+window.renderIdeas = () => {
+  const room=document.getElementById('fil-room').value;
+  const rating=document.getElementById('fil-rating').value;
+  const src=document.getElementById('fil-src').value;
+  const filtered=ideas.filter(i=>(!room||i.room===room)&&(!src||i.source===src)&&(!rating||(rating==='none'?!i.rating:i.rating===rating)));
+  document.getElementById('idea-count-pill').textContent=filtered.length+' idea'+(filtered.length!==1?'s':'');
+  const grid=document.getElementById('ideas-grid');
+  if(!filtered.length){ grid.innerHTML='<div class="empty"><div class="empty-icon">🏠</div><p>No ideas yet — head to Capture to add some!</p></div>'; return; }
+  grid.innerHTML=filtered.map(i=>{
+    const bg=ROOM_BG[i.room]||'#f0ede8'; const col=ROOM_COLORS[i.room]||'#3d3428';
+    const sel=selectedIds.has(i.id); const ri=i.rating?RATING_INFO[i.rating]:null;
+    return `<div class="idea-card${selectMode?' selectable':''}${sel?' selected':''}" id="icard-${i.id}" onclick="${selectMode?`toggleSel('${i.id}')`:`openEditModal('${i.id}')`}">
+      <div class="card-checkbox" aria-hidden="true"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4l3 3 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      ${i.photoUrl?`<img class="card-photo" src="${i.photoUrl}" alt="${i.title}" />`:`<div class="card-photo-ph">🖼</div>`}
+      <div class="card-body">
+        <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:6px">
+          <span class="room-badge" style="background:${bg};color:${col}">${i.room}</span>
+          ${ri?`<span class="rating-pill ${ri.cls}">${ri.label}</span>`:''}
+        </div>
+        <p class="card-title">${i.title}</p>
+        ${i.price?`<p class="card-notes" style="color:var(--terracotta);font-weight:500">${i.price}</p>`:''}
+        ${i.notes?`<p class="card-notes">${i.notes.substring(0,70)}${i.notes.length>70?'…':''}</p>`:''}
+        ${i.addedBy?`<p style="font-size:0.68rem;color:var(--ink-60);margin-top:3px">Added by ${i.addedBy}</p>`:''}
+      </div>
+    </div>`;
+  }).join('');
+};
+window.toggleSel = id => {
+  if(selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id);
+  document.getElementById('sel-count-label').textContent=selectedIds.size+' idea'+(selectedIds.size!==1?'s':'')+' selected — tick the ones you want';
+  renderIdeas();
+};
+
+// ── EDIT MODAL ────────────────────────────────────────────────
+window.openEditModal = id => {
+  const idea=ideas.find(i=>i.id===id); if(!idea) return;
+  editingId=id; editPhoto=null; editRating=idea.rating||null;
+  document.getElementById('edit-modal-title').textContent='Edit idea';
+  document.getElementById('edit-modal-body').innerHTML=`
+    <div class="form-group">
+      <label class="form-label">Photo <span>optional</span></label>
+      <div class="photo-zone${idea.photoUrl?' has-photo':''}" id="edit-photo-zone"
+        onclick="if(!this.classList.contains('has-photo')) document.getElementById('edit-file-input').click()"
+        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
+        ondrop="onDrop(event,'edit-photo-zone','edit-photo-preview','edit-photo-placeholder','edit-file-input','edit-photo-btn-row',true)">
+        <div id="edit-photo-placeholder" ${idea.photoUrl?'style="display:none"':''}>
+          <div style="font-size:1.5rem;margin-bottom:0.35rem">📷</div>
+          <p class="photo-hint">Click, drag, or paste (Ctrl/Cmd+V)</p>
+        </div>
+        <img id="edit-photo-preview" src="${idea.photoUrl||''}" alt="" style="${idea.photoUrl?'':'display:none'}" />
+      </div>
+      <div id="edit-photo-btn-row" style="${idea.photoUrl?'':'display:none'};gap:6px;margin-top:8px">
+        <button class="btn btn-sm" onclick="document.getElementById('edit-file-input').click()">Change</button>
+        <button class="btn btn-sm btn-danger" onclick="clearPhoto('edit-photo-zone','edit-photo-preview','edit-photo-placeholder','edit-file-input','edit-photo-btn-row',true)">Remove</button>
+      </div>
+      <input type="file" id="edit-file-input" accept="image/*" onchange="onFileSelect(event,'edit-photo-preview','edit-photo-zone','edit-photo-placeholder','edit-photo-btn-row',true)" />
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Title</label><input type="text" id="e-title" value="${escHtml(idea.title)}" /></div>
+      <div class="form-group"><label class="form-label">Room</label>
+        <select id="e-room">${roomOptions(idea.room)}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Rating <span>optional</span></label>
+        <div class="rating-group">
+          <button type="button" class="rating-btn${editRating==='ok'?' sel-ok':''}" id="erb-ok" onclick="setEditRating('ok')">👍 OK</button>
+          <button type="button" class="rating-btn${editRating==='like'?' sel-like':''}" id="erb-like" onclick="setEditRating('like')">⭐ Like</button>
+          <button type="button" class="rating-btn${editRating==='love'?' sel-love':''}" id="erb-love" onclick="setEditRating('love')">❤️ Love</button>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Added by <span>optional</span></label><input type="text" id="e-addedby" value="${escHtml(idea.addedBy||'')}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Source</label>
+        <select id="e-source">
+          ${['Houzz','Pinterest','Online Store','Website','Catalog','Personal Photo','Miscellaneous'].map(s=>`<option${idea.source===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Link <span>optional</span></label><input type="url" id="e-url" value="${escHtml(idea.url||'')}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Price <span>optional</span></label><input type="text" id="e-price" value="${escHtml(idea.price||'')}" placeholder="e.g. $560 or $5.60 / yd" /></div>
+      <div class="form-group"><label class="form-label">Color / Finish chosen <span>optional</span></label><input type="text" id="e-color" value="${escHtml(idea.colorChosen||'')}" /></div>
+    </div>
+    <div class="form-group"><label class="form-label">Additional colors <span>optional</span></label><input type="text" id="e-colors-extra" value="${escHtml(idea.colorsExtra||'')}" /></div>
+    <div class="form-group"><label class="form-label">Notes <span>optional</span></label><textarea id="e-notes">${escHtml(idea.notes||'')}</textarea></div>
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-top:0.5rem">
+      <button class="btn btn-danger" onclick="deleteIdeaFromModal()">Delete idea</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-terra" onclick="saveEdit()">Save changes</button>
+      </div>
+    </div>`;
+  if(idea.photoUrl) editPhoto = idea.photoUrl;
+  document.getElementById('edit-modal').classList.add('open');
+};
+window.closeEditModal = () => { document.getElementById('edit-modal').classList.remove('open'); editingId=null; editPhoto=null; editRating=null; };
+window.saveEdit = async () => {
+  const idea=ideas.find(i=>i.id===editingId); if(!idea) return;
+  const title=document.getElementById('e-title').value.trim();
+  const room=document.getElementById('e-room').value;
+  if(!title){alert('Please add a title.');return;}
+  if(!room){alert('Please select a room.');return;}
+  try {
+    let photoUrl=idea.photoUrl||null;
+    if(editPhoto&&editPhoto.startsWith('data:')){
+      const path=`photos/${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      photoUrl=await uploadPhoto(editPhoto,path);
+    } else if(!editPhoto){ photoUrl=null; }
+    await updateDoc(doc(db,'ideas',editingId),{
+      title,room,
+      source:document.getElementById('e-source').value,
+      url:document.getElementById('e-url').value.trim(),
+      notes:document.getElementById('e-notes').value.trim(),
+      addedBy:document.getElementById('e-addedby').value.trim(),
+      price:document.getElementById('e-price').value.trim(),
+      colorChosen:document.getElementById('e-color').value.trim(),
+      colorsExtra:document.getElementById('e-colors-extra').value.trim(),
+      rating:editRating, photoUrl
+    });
+    toast('Changes saved!'); closeEditModal();
+  } catch(err){ console.error(err); alert('Error saving changes.'); }
+};
+window.deleteIdeaFromModal = async () => {
+  if(!confirm('Delete this idea? It will also be removed from any mood boards.')) return;
+  try {
+    await deleteDoc(doc(db,'ideas',editingId));
+    for(const board of boards){
+      if(board.ideaIds.includes(editingId)){
+        board.ideaIds=board.ideaIds.filter(x=>x!==editingId);
+        await updateDoc(doc(db,'boards',board.id),{ideaIds:board.ideaIds});
+      }
+    }
+    toast('Idea deleted'); closeEditModal();
+  } catch(err){ console.error(err); alert('Error deleting idea.'); }
+};
+
+// ── VIEW-ONLY MODAL (from mood board / mood board view) ───────
+window.openViewModal = id => {
+  const idea=ideas.find(i=>i.id===id); if(!idea) return;
+  const ri=idea.rating?RATING_INFO[idea.rating]:null;
+  document.getElementById('view-modal-title').textContent=idea.title;
+  document.getElementById('view-modal-body').innerHTML=`
+    ${idea.photoUrl?`<img class="view-modal-photo" src="${idea.photoUrl}" alt="${escHtml(idea.title)}" />`:''}
+    <div class="view-grid">
+      <div class="view-field"><div class="view-field-label">Room</div><div class="view-field-value">${escHtml(idea.room)}</div></div>
+      ${ri?`<div class="view-field"><div class="view-field-label">Rating</div><div class="view-field-value"><span class="rating-pill ${ri.cls}">${ri.label}</span></div></div>`:''}
+      ${idea.source?`<div class="view-field"><div class="view-field-label">Source</div><div class="view-field-value">${escHtml(idea.source)}</div></div>`:''}
+      ${idea.addedBy?`<div class="view-field"><div class="view-field-label">Added by</div><div class="view-field-value">${escHtml(idea.addedBy)}</div></div>`:''}
+      ${idea.price?`<div class="view-field"><div class="view-field-label">Price</div><div class="view-field-value" style="color:var(--terracotta);font-weight:500">${escHtml(idea.price)}</div></div>`:''}
+      ${idea.colorChosen?`<div class="view-field"><div class="view-field-label">Color / Finish chosen</div><div class="view-field-value">${escHtml(idea.colorChosen)}</div></div>`:''}
+    </div>
+    ${idea.colorsExtra?`<div class="view-field"><div class="view-field-label">Additional colors</div><div class="view-field-value">${escHtml(idea.colorsExtra)}</div></div>`:''}
+    ${idea.notes?`<div class="view-field" style="margin-top:0.5rem"><div class="view-field-label">Notes</div><div class="view-field-value">${escHtml(idea.notes)}</div></div>`:''}
+    ${idea.url?`<div class="view-field" style="margin-top:0.75rem"><a href="${idea.url}" target="_blank" style="color:var(--terracotta);font-size:0.875rem">↗ View original source</a></div>`:''}
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem">
+      <button class="btn" onclick="closeViewModal()">Close</button>
+      <button class="btn btn-terra" onclick="closeViewModal();openEditModal('${id}')">Edit this idea</button>
+    </div>`;
+  document.getElementById('view-modal').classList.add('open');
+};
+window.closeViewModal = () => document.getElementById('view-modal').classList.remove('open');
+
+// ── SELECT MODE ───────────────────────────────────────────────
+window.enterSelectMode = boardId => {
+  selectMode=true; selectedIds=new Set();
+  document.getElementById('select-mode-bar').style.display='block';
+  document.getElementById('sel-count-label').textContent='0 ideas selected — tick the ones you want';
+  const sel=document.getElementById('target-board-select');
+  sel.innerHTML='<option value="">— pick a board —</option>';
+  boards.forEach(b=>{ const o=document.createElement('option'); o.value=b.id; o.textContent=b.name; if(b.id===boardId) o.selected=true; sel.appendChild(o); });
+  document.getElementById('fil-room').value=''; document.getElementById('fil-rating').value=''; document.getElementById('fil-src').value='';
+  showPage('ideas');
+};
+window.cancelSelectMode = () => { selectMode=false; selectedIds=new Set(); document.getElementById('select-mode-bar').style.display='none'; renderIdeas(); };
+window.assignSelected = async () => {
+  const boardId=document.getElementById('target-board-select').value;
+  if(!boardId){alert('Please pick a board first.');return;}
+  if(!selectedIds.size){alert('Tick at least one idea first.');return;}
+  const board=boards.find(b=>b.id===boardId);
+  const newIds=[...selectedIds].filter(id=>!board.ideaIds.includes(id));
+  board.ideaIds=[...board.ideaIds,...newIds];
+  try {
+    await updateDoc(doc(db,'boards',boardId),{ideaIds:board.ideaIds});
+    toast(newIds.length+' idea'+(newIds.length!==1?'s':'')+' added to board');
+    cancelSelectMode(); showPage('moodboard');
+  } catch(err){ console.error(err); alert('Error updating board.'); }
+};
+
+// ── BOARDS ────────────────────────────────────────────────────
+window.createBoard = async () => {
+  const name=document.getElementById('nb-name').value.trim();
+  if(!name){alert('Please give the board a name.');return;}
+  try {
+    await addDoc(collection(db,'boards'),{name,room:document.getElementById('nb-room').value,ideaIds:[],created:Date.now()});
+    document.getElementById('nb-name').value=''; document.getElementById('nb-room').value=''; toast('Board created!');
+  } catch(err){ console.error(err); alert('Error creating board.'); }
+};
+window.deleteBoard = async id => {
+  if(!confirm('Delete this board? Your ideas will not be deleted.')) return;
+  try { await deleteDoc(doc(db,'boards',id)); toast('Board deleted'); }
+  catch(err){ console.error(err); alert('Error deleting board.'); }
+};
+window.removeFromBoard = async (boardId,ideaId) => {
+  const board=boards.find(b=>b.id===boardId); if(!board) return;
+  board.ideaIds=board.ideaIds.filter(id=>id!==ideaId);
+  try { await updateDoc(doc(db,'boards',boardId),{ideaIds:board.ideaIds}); }
+  catch(err){ console.error(err); alert('Error updating board.'); }
+};
+window.renderBoards = () => {
+  const list=document.getElementById('boards-list');
+  if(!boards.length){ list.innerHTML='<div class="empty"><div class="empty-icon">🎨</div><p>No boards yet. Create one above, then click "+ Add ideas".</p></div>'; return; }
+  list.innerHTML=boards.map(b=>{
+    const boardIdeas=b.ideaIds.map(id=>ideas.find(i=>i.id===id)).filter(Boolean);
+    return `<div class="board-card">
+      <div class="board-header">
+        <div>
+          <div class="board-name">${escHtml(b.name)}</div>
+          <div class="board-meta">${b.room||'All rooms'} &middot; ${boardIdeas.length} idea${boardIdeas.length!==1?'s':''}</div>
+        </div>
+        <div class="board-header-actions">
+          <button class="btn btn-sm" onclick="enterSelectMode('${b.id}')">+ Add ideas</button>
+          <button class="btn btn-sm" onclick="openMoodBoardView('${b.id}')">🖼 View board</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteBoard('${b.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="board-body">
+        ${boardIdeas.length?`
+          <div class="board-mood-grid">
+            ${boardIdeas.map(i=>{
+              const ri=i.rating?RATING_INFO[i.rating]:null;
+              return `<div class="mood-tile" onclick="openViewModal('${i.id}')">
+                ${i.photoUrl?`<img src="${i.photoUrl}" alt="${escHtml(i.title)}" />`:`<div class="mood-ph">🖼</div>`}
+                <div class="mood-tile-body">
+                  <div class="mood-tile-title">${escHtml(i.title)}</div>
+                  ${ri?`<span class="rating-pill ${ri.cls}" style="font-size:0.65rem;display:inline-block;margin-bottom:2px">${ri.label}</span>`:''}
+                  ${i.price?`<div style="font-size:0.7rem;color:var(--terracotta);font-weight:500">${escHtml(i.price)}</div>`:''}
+                </div>
+                <div class="mood-remove">
+                  <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeFromBoard('${b.id}','${i.id}')">Remove</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`:
+          `<p style="font-size:0.8125rem;color:var(--ink-60);padding:0.5rem 0">Empty — click "+ Add ideas" to select from your saved ideas.</p>`}
+      </div>
+    </div>`;
+  }).join('');
+};
+
+// ── MOOD BOARD VIEW ───────────────────────────────────────────
+window.openMoodBoardView = boardId => {
+  const board=boards.find(b=>b.id===boardId); if(!board) return;
+  activeMoodBoardId=boardId;
+  const boardIdeas=board.ideaIds.map(id=>ideas.find(i=>i.id===id)).filter(Boolean);
+  document.getElementById('mbv-title').textContent=board.name;
+  document.getElementById('mbv-grid').innerHTML=boardIdeas.map(i=>`
+    <div class="mbv-photo-tile" onclick="closeMoodBoardView();openViewModal('${i.id}')">
+      ${i.photoUrl?`<img src="${i.photoUrl}" alt="${escHtml(i.title)}" />`:`<div class="mbv-ph">🖼</div>`}
+      <div class="mbv-overlay"><div class="mbv-overlay-title">${escHtml(i.title)}</div></div>
+    </div>`).join('');
+  document.getElementById('mbv-backdrop').classList.add('open');
+};
+window.closeMoodBoardView = () => { document.getElementById('mbv-backdrop').classList.remove('open'); activeMoodBoardId=null; };
+
+// ── PDF EXPORT ────────────────────────────────────────────────
+window.exportMoodBoardPDF = () => {
+  const board=boards.find(b=>b.id===activeMoodBoardId); if(!board) return;
+  const boardIdeas=board.ideaIds.map(id=>ideas.find(i=>i.id===id)).filter(Boolean);
+  const area=document.getElementById('pdf-print-area');
+  area.innerHTML=`<div class="pdf-page">
+    <div class="pdf-header">
+      <h1>${escHtml(board.name)}</h1>
+      <p>Lamont Renovation &middot; ${boardIdeas.length} idea${boardIdeas.length!==1?'s':''} &middot; ${new Date().toLocaleDateString()}</p>
+    </div>
+    <div class="pdf-grid">
+      ${boardIdeas.map(i=>`<div class="pdf-tile">
+        ${i.photoUrl?`<img src="${i.photoUrl}" alt="${escHtml(i.title)}" />`:`<div class="pdf-ph">🖼</div>`}
+        <div class="pdf-tile-title">${escHtml(i.title)}</div>
+        ${i.price?`<div class="pdf-tile-sub">${escHtml(i.price)}</div>`:''}
+        ${i.room?`<div class="pdf-tile-sub">${escHtml(i.room)}</div>`:''}
+      </div>`).join('')}
+    </div>
+  </div>`;
+  setTimeout(()=>{ window.print(); }, 300);
+};
+
+// ── UTILS ─────────────────────────────────────────────────────
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function roomOptions(selected){
+  const rooms=['Bedroom Master','Bedroom 1','Bedroom 2','Bathroom Master','Bathroom 1','Bathroom 2','Bathroom 3','Closet Linen','Closet Coat','Office','Kitchen','Kitchen Pantry','Laundry Room','Main Room Living','Main Room General','Main Room Dining','Main Room Entrance','Outside Front Door','Outside Backyard'];
+  return '<option value="">— select —</option>'+rooms.map(r=>`<option${r===selected?' selected':''}>${r}</option>`).join('');
+}
+
+// ── REAL-TIME LISTENERS ───────────────────────────────────────
+let ideasReady=false, boardsReady=false;
+function checkReady(){ if(ideasReady&&boardsReady) document.getElementById('loading-screen').style.display='none'; }
+
+onSnapshot(query(collection(db,'ideas'),orderBy('created','desc')), snap=>{
+  ideas=snap.docs.map(d=>({id:d.id,...d.data()})); ideasReady=true; checkReady();
+  const page=document.querySelector('.page.active');
+  if(page&&page.id==='page-ideas') renderIdeas();
+  if(page&&page.id==='page-moodboard') renderBoards();
+});
+onSnapshot(query(collection(db,'boards'),orderBy('created','asc')), snap=>{
+  boards=snap.docs.map(d=>({id:d.id,...d.data()})); boardsReady=true; checkReady();
+  const page=document.querySelector('.page.active');
+  if(page&&page.id==='page-moodboard') renderBoards();
+});
+</script>
+</body>
+</html>
